@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>オーダーピッキングリスト</title>
+    
+    <!-- バーコード生成ライブラリ -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    
+    <style>
+        /* IDSテーマに準拠したカスタムスタイル */
+        :root {
+            --ids-color-primary: #1e88e5;
+            --ids-color-secondary: #424242;
+            --ids-color-border: #d0d0d0;
+            --ids-color-background: #ffffff;
+            --ids-color-background-secondary: #f5f5f5;
+            --ids-color-text: #333333;
+            --ids-color-error: #d32f2f;
+            --ids-color-warning: #ffa726;
+            --ids-spacing-xs: 4px;
+            --ids-spacing-sm: 8px;
+            --ids-spacing-md: 16px;
+            --ids-spacing-lg: 24px;
+            --ids-border-radius: 4px;
+            --ids-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4 landscape;
+            margin: 10mm;
+        }
+
+        body {
+            font-family: var(--ids-font-family);
+            font-size: 10pt;
+            background-color: var(--ids-color-background-secondary);
+            padding: var(--ids-spacing-md);
+            color: var(--ids-color-text);
+        }
+
+        /* ページコンテナ */
+        .ids-page-container {
+            width: 297mm;
+            min-height: 210mm;
+            background: var(--ids-color-background);
+            margin: 0 auto;
+            padding: var(--ids-spacing-lg);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border: 1px solid var(--ids-color-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ヘッダー */
+        .ids-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--ids-spacing-md);
+            padding-bottom: var(--ids-spacing-sm);
+            border-bottom: 2px solid var(--ids-color-primary);
+        }
+
+        .ids-badge {
+            display: inline-block;
+            padding: var(--ids-spacing-xs) var(--ids-spacing-md);
+            font-size: 14pt;
+            font-weight: bold;
+            border: 2px solid var(--ids-color-primary);
+            border-radius: var(--ids-border-radius);
+            background-color: var(--ids-color-background);
+            color: var(--ids-color-primary);
+        }
+
+        .ids-header-barcode {
+            text-align: left;
+        }
+
+        .ids-header-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--ids-spacing-sm);
+        }
+
+        /* タイトル */
+        .ids-title {
+            text-align: center;
+            font-size: 18pt;
+            font-weight: 600;
+            color: var(--ids-color-primary);
+            letter-spacing: 2px;
+            flex: 1;
+        }
+
+        /* メインコンテンツグリッド */
+        .ids-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 300px;
+            gap: var(--ids-spacing-md);
+            margin-top: var(--ids-spacing-sm);
+            margin-bottom: var(--ids-spacing-md);
+        }
+
+        /* カードスタイル */
+        .ids-card {
+            border: 2px solid var(--ids-color-primary);
+            border-radius: var(--ids-border-radius);
+            padding: var(--ids-spacing-sm);
+            background: var(--ids-color-background);
+            box-shadow: 0 1px 3px rgba(30, 136, 229, 0.1);
+        }
+
+        .ids-card-header {
+            font-weight: 600;
+            font-size: 11pt;
+            padding-bottom: var(--ids-spacing-sm);
+            margin-bottom: var(--ids-spacing-sm);
+            border-bottom: 2px solid var(--ids-color-primary);
+            color: var(--ids-color-primary);
+        }
+
+        /* フィールド行 */
+        .ids-field-row {
+            display: flex;
+            gap: var(--ids-spacing-sm);
+            margin-bottom: var(--ids-spacing-xs);
+            align-items: center;
+        }
+
+        .ids-label {
+            font-weight: 500;
+            min-width: 100px;
+            font-size: 9pt;
+            color: var(--ids-color-secondary);
+        }
+
+        .ids-value {
+            flex: 1;
+            font-size: 10pt;
+            padding: var(--ids-spacing-xs);
+        }
+
+        /* インプットフィールド */
+        .ids-input {
+            width: 100%;
+            border: 1px solid var(--ids-color-border);
+            border-radius: var(--ids-border-radius);
+            padding: var(--ids-spacing-sm);
+            font-size: 10pt;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .ids-input:focus {
+            outline: none;
+            border-color: var(--ids-color-primary);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+
+        .ids-input:disabled,
+        .ids-input[readonly] {
+            background-color: var(--ids-color-background-secondary);
+            color: var(--ids-color-secondary);
+            cursor: not-allowed;
+        }
+
+        .ids-input-highlight {
+            color: var(--ids-color-error);
+            font-weight: bold;
+            border-color: var(--ids-color-error);
+            background-color: #fff9e6;
+        }
+
+        /* 大きいテキスト */
+        .ids-large-text {
+            font-size: 20pt;
+            font-weight: 600;
+            margin: var(--ids-spacing-xs) 0;
+            text-align: center;
+            color: var(--ids-color-primary);
+        }
+
+        /* 配送カード */
+        .ids-delivery-card {
+            border: 2px solid var(--ids-color-primary);
+            border-radius: var(--ids-border-radius);
+            padding: var(--ids-spacing-sm);
+            background: linear-gradient(to bottom, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .ids-delivery-card-title {
+            text-align: center;
+            font-weight: 600;
+            font-size: 11pt;
+            color: var(--ids-color-primary);
+            padding-bottom: var(--ids-spacing-xs);
+            margin-bottom: var(--ids-spacing-sm);
+            border-bottom: 2px solid var(--ids-color-primary);
+        }
+
+        /* ボトムセクション */
+        .ids-bottom-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr) 150px;
+            gap: var(--ids-spacing-md);
+            margin-top: 0;
+            margin-bottom: var(--ids-spacing-lg);
+        }
+
+        .ids-process-box {
+            border: 2px solid var(--ids-color-primary);
+            border-radius: var(--ids-border-radius);
+            padding: var(--ids-spacing-sm);
+            position: relative;
+            background: var(--ids-color-background);
+            box-shadow: 0 1px 3px rgba(30, 136, 229, 0.1);
+            min-height: 100px;
+        }
+
+        .ids-process-title {
+            text-align: center;
+            font-weight: 600;
+            font-size: 11pt;
+            padding-bottom: var(--ids-spacing-sm);
+            margin-bottom: var(--ids-spacing-sm);
+            border-bottom: 2px solid var(--ids-color-primary);
+            color: var(--ids-color-primary);
+        }
+
+        .ids-arrow {
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24pt;
+            color: var(--ids-color-primary);
+            z-index: 10;
+        }
+
+        /* バーコードコンテナ */
+        .ids-barcode-container {
+            background: var(--ids-color-background);
+            border: 2px solid var(--ids-color-primary);
+            border-radius: var(--ids-border-radius);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--ids-spacing-xs);
+            overflow: hidden;
+        }
+
+        .ids-barcode-container svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .ids-barcode-large {
+            width: 180px;
+            height: 50px;
+        }
+
+        .ids-barcode-medium {
+            width: 150px;
+            height: 40px;
+        }
+
+        .ids-barcode-small {
+            width: 120px;
+            height: 35px;
+        }
+
+        /* フッター */
+        .ids-footer {
+            text-align: right;
+            font-size: 8pt;
+            color: var(--ids-color-secondary);
+        }
+
+        .ids-version {
+            font-size: 11pt;
+            font-weight: 600;
+            color: var(--ids-color-secondary);
+        }
+
+        /* ワーカー入力フィールド */
+        .ids-worker-input {
+            width: 100%;
+            height: 45px;
+            border: 2px solid var(--ids-color-error);
+            border-radius: var(--ids-border-radius);
+            background: #fff9e6;
+            color: var(--ids-color-error);
+            font-weight: bold;
+            font-size: 16pt;
+            text-align: center;
+            font-family: inherit;
+        }
+
+        .ids-worker-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        /* レスポンシブ対応 */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .ids-page-container {
+                box-shadow: none;
+                border: none;
+            }
+
+            .ids-input:focus {
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ids-main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ids-bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ids-arrow {
+                display: none;
+            }
+        }
+
+        @media print {
+            .ids-bottom-grid {
+                grid-template-columns: repeat(4, 1fr) 150px;
+            }
+        }
+
+        /* ダークテーマ対応 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --ids-color-background: #1e1e1e;
+                --ids-color-background-secondary: #2d2d2d;
+                --ids-color-text: #e0e0e0;
+                --ids-color-border: #424242;
+                --ids-color-secondary: #b0b0b0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ids-page-container">
+        <!-- ヘッダー -->
+        <div class="ids-header">
+            <div class="ids-header-content">
+                <div class="ids-badge">||||| New |||||</div>
+                <div class="ids-header-barcode">
+                    <div style="font-size: 9pt; margin-bottom: 4px;">受注番号</div>
+                    <div class="ids-barcode-container ids-barcode-large">
+                        <svg id="barcode-header"></svg>
+                    </div>
+                    <div style="font-size: 8pt; margin-top: 2px;">*1424571M1*</div>
+                </div>
+            </div>
+            
+            <!-- タイトル -->
+            <div class="ids-title">オーダーピッキングリスト</div>
+            
+            <div style="width: 250px;"></div> <!-- 右側のスペース調整 -->
+        </div>
+
+        <!-- メインコンテンツ -->
+        <div class="ids-main-grid">
+            <!-- 左側セクション -->
+            <div class="ids-card">
+                <div class="ids-field-row">
+                    <span class="ids-label">印刷区分</span>
+                </div>
+                <div class="ids-field-row">
+                    <span class="ids-value">(C1, WE, WTのみ)※部山</span>
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <span class="ids-label">製造元</span>
+                    <span class="ids-label">客先注番</span>
+                </div>
+                <div class="ids-field-row">
+                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 4px; border-radius: var(--ids-border-radius);">WT</span>
+                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 4px; border-radius: var(--ids-border-radius);">KM9HT0003</span>
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <span class="ids-label">得意先コード</span>
+                    <span class="ids-label">/ 品目名</span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-label">商品コード</span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">0999</span>
+                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">PKLX0570</span>
+                </div>
+
+                <div class="ids-large-text">PKLX0570</div>
+
+                <div style="margin: var(--ids-spacing-md) 0;">
+                    <div style="font-size: 8pt; margin-bottom: 4px; color: var(--ids-color-secondary);">納品先コード　　　　*00C099905*</div>
+                    <div class="ids-barcode-container ids-barcode-small">
+                        <svg id="barcode-product"></svg>
+                    </div>
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <span class="ids-label">得意先コード</span>
+                    <span class="ids-label">納入先コード</span>
+                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 4px; border-radius: var(--ids-border-radius);">〒</span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">0</span>
+                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">0999</span>
+                    <span class="ids-value" style="flex: 2; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">923-8626</span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-label">住所</span>
+                </div>
+                <div class="ids-field-row">
+                    <span style="display: flex; align-items: center; gap: 5px;">
+                        <span style="font-size: 14pt;">①</span>
+                        <span class="ids-value">石川県小松市光町93</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- 中央セクション -->
+            <div class="ids-card">
+                <div class="ids-field-row">
+                    <span class="ids-label">得意先略称</span>
+                </div>
+                <div class="ids-field-row">
+                    <input type="text" class="ids-input" value="(株)村田製作所" readonly>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-label">ロケーション</span>
+                </div>
+                <div class="ids-field-row">
+                    <input type="text" class="ids-input" id="location">
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md); gap: 40px;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 9pt; margin-bottom: 4px; color: var(--ids-color-secondary);">在庫数量</div>
+                        <div style="font-size: 9pt; margin-bottom: 4px; color: var(--ids-color-secondary);">出荷数量</div>
+                    </div>
+                </div>
+
+                <div class="ids-field-row" style="gap: 40px;">
+                    <div style="flex: 1;">
+                        <input type="text" class="ids-input" value="179.676" readonly style="background: var(--ids-color-background-secondary); margin-bottom: 4px;">
+                        <input type="text" class="ids-input ids-input-highlight" value="870,456" style="font-weight: bold;">
+                    </div>
+                </div>
+
+                <div style="margin: var(--ids-spacing-md) 0;">
+                    <div style="font-size: 8pt; margin-bottom: 4px; color: var(--ids-color-secondary);">明細図番　　　　　　　PKLX0570</div>
+                    <div class="ids-barcode-container ids-barcode-small">
+                        <svg id="barcode-detail"></svg>
+                    </div>
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <span class="ids-label">得意先コード</span>
+                    <span class="ids-label">納入先コード</span>
+                    <span class="ids-label">〒</span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">0999</span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-label">住所</span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-label">納入先名称</span>
+                </div>
+                <div class="ids-field-row">
+                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">
+                        (株)小松村田製作所　輸島受付佐
+                    </span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span class="ids-label">給親</span>
+                </div>
+            </div>
+
+            <!-- 右側セクション（出荷数量連絡カード） -->
+            <div class="ids-delivery-card">
+                <div class="ids-delivery-card-title">出荷数量連絡カード</div>
+
+                <div class="ids-field-row">
+                    <span style="min-width: 80px; font-size: 9pt;">得意先</span>
+                    <span style="font-weight: 600;">0999</span>
+                </div>
+
+                <div class="ids-field-row">
+                    <span style="font-size: 9pt;">(株)村田製作所</span>
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <span style="min-width: 80px; font-size: 9pt;">品名</span>
+                </div>
+                <div class="ids-field-row">
+                    <div class="ids-large-text" style="font-size: 16pt; width: 100%;">PKLX0570</div>
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md); align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 9pt; margin-bottom: 4px;">納期</div>
+                        <input type="text" class="ids-input ids-input-highlight" value="10月31日(金)" style="font-weight: bold;">
+                    </div>
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <span style="min-width: 80px; font-size: 9pt;">数量</span>
+                    <span style="font-size: 9pt; margin-left: auto;">在庫</span>
+                </div>
+                <div class="ids-field-row">
+                    <input type="text" class="ids-input ids-input-highlight" value="10/10(金)" style="font-weight: bold;">
+                    <span style="min-width: 40px; text-align: right;">0</span>
+                </div>
+
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <span style="min-width: 100px; font-size: 9pt;">加工区分</span>
+                    <span style="font-weight: 600; font-size: 12pt;">WT</span>
+                </div>
+
+                <div style="margin-top: var(--ids-spacing-md); border-top: 2px solid var(--ids-color-primary); padding-top: var(--ids-spacing-md);">
+                    <div class="ids-field-row">
+                        <span style="min-width: 80px; font-size: 9pt;">納期</span>
+                    </div>
+                    <div class="ids-field-row">
+                        <input type="text" class="ids-input ids-input-highlight" value="10月31日(金)" style="font-size: 18pt; text-align: center; font-weight: bold; height: 50px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 下部プロセスセクション -->
+        <div class="ids-bottom-grid">
+            <div class="ids-process-box">
+                <div class="ids-process-title">外 段 取 り</div>
+                <div class="ids-arrow">→</div>
+            </div>
+
+            <div class="ids-process-box">
+                <div class="ids-process-title">小　分　け</div>
+                <div class="ids-arrow">→</div>
+            </div>
+
+            <div class="ids-process-box">
+                <div class="ids-process-title">作業者 / 出荷数</div>
+                <div style="margin-top: var(--ids-spacing-xs);">
+                    <div style="font-size: 9pt; margin-bottom: 2px;">作業者</div>
+                    <input type="text" class="ids-input ids-input-highlight" value="3" style="font-size: 14pt; text-align: center;">
+                </div>
+                <div style="margin-top: var(--ids-spacing-sm); text-align: center;">
+                    <div style="font-size: 9pt; margin-bottom: 2px;">─────────</div>
+                    <input type="text" class="ids-worker-input" value="43/3">
+                    <div style="text-align: right; font-size: 8pt; margin-top: 2px;">ケース</div>
+                </div>
+                <div style="text-align: center; margin-top: var(--ids-spacing-xs);">
+                    <span style="font-size: 16pt;">▽</span>
+                </div>
+                <div class="ids-arrow">→</div>
+            </div>
+
+            <div class="ids-process-box">
+                <div class="ids-process-title">検　　品</div>
+            </div>
+
+            <!-- ピッキングリストバーコード（右側に配置） -->
+            <div class="ids-process-box" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div style="margin-bottom: 8px; font-size: 9pt; font-weight: 600; text-align: center;">ピッキングリスト<br>バーコード</div>
+                <div style="width: 120px; height: 120px; border: 2px solid var(--ids-color-primary); background: white; display: flex; align-items: center; justify-content: center;">
+                    <div id="qr-footer" style="width: 110px; height: 110px;"></div>
+                </div>
+                <div style="font-size: 7pt; margin-top: 4px; text-align: center;">NSN.1</div>
+            </div>
+        </div>
+
+        <!-- フッターセクション -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding-top: var(--ids-spacing-sm); position: relative;">
+            <div class="ids-version">Vr 3.2</div>
+
+            <div class="ids-footer">
+                <div style="font-size: 8pt;">印刷日: 2012/8/12 5:21</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // バーコード生成（JsBarcodeが読み込まれている場合のみ）
+            if (typeof JsBarcode !== 'undefined') {
+                const barcodes = [
+                    { id: 'barcode-header', value: '1424571M1', height: 40 },
+                    { id: 'barcode-product', value: '00C099905', height: 30 },
+                    { id: 'barcode-detail', value: 'PKLX0570', height: 30 }
+                ];
+
+                barcodes.forEach(function(barcode) {
+                    const element = document.getElementById(barcode.id);
+                    if (element) {
+                        try {
+                            JsBarcode(element, barcode.value, {
+                                format: "CODE39",
+                                width: 1.5,
+                                height: barcode.height,
+                                displayValue: false,
+                                margin: 2
+                            });
+                        } catch (e) {
+                            console.error('バーコード生成エラー:', e);
+                            // エラー時は代替テキストを表示
+                            element.innerHTML = '<text x="50%" y="50%" text-anchor="middle" font-size="12">' + barcode.value + '</text>';
+                        }
+                    }
+                });
+            } else {
+                console.warn('JsBarcode ライブラリが読み込まれていません');
+            }
+
+            // QRコード生成（簡易版 - テキストで代替）
+            const qrElement = document.getElementById('qr-footer');
+            if (qrElement) {
+                // 実際のQRコード生成ライブラリを使用する場合はここで実装
+                qrElement.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; font-size: 8pt; text-align: center;">QR Code<br>PKLX0570</div>';
+            }
+
+            // URLパラメータからデータ取得（実装例）
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+            if (orderId) {
+                console.log('Order ID:', orderId);
+                // ここで実際のデータをロードする処理を実装
+            }
+
+            // 数値入力フィールドの自動フォーマット
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value) {
+                        const num = parseFloat(this.value);
+                        if (!isNaN(num)) {
+                            this.value = num.toLocaleString();
+                        }
+                    }
+                });
+
+                input.addEventListener('focus', function() {
+                    this.value = this.value.replace(/,/g, '');
+                });
+            });
+        });
+
+        // 印刷機能
+        function printPage() {
+            window.print();
+        }
+
+        // 戻る機能
+        function goBack() {
+            window.history.back();
+        }
+
+        // キーボードショートカット
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printPage();
+            }
+            if (e.key === 'Escape') {
+                goBack();
+            }
+        });
+    </script>
+</body>
+</html>
