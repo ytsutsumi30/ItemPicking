@@ -388,16 +388,17 @@
                     <span class="ids-label">印刷区分</span>
                 </div>
                 <div class="ids-field-row">
-                    <span class="ids-value">(C1, WE, WTのみ)※部山</span>
+                    <input type="text" class="ids-input" value="(C1, WE, WTのみ)※郡山" readonly>
                 </div>
+
 
                 <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
                     <span class="ids-label">製造元</span>
-                    <span class="ids-label">客先注番</span>
+                    <span class="ids-label">/ 客先注番</span>
                 </div>
                 <div class="ids-field-row">
-                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 4px; border-radius: var(--ids-border-radius);">WT</span>
-                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 4px; border-radius: var(--ids-border-radius);">KM9HT0003</span>
+                    <span class="ids-value" style="border: 1px solid var(--ids-color-secondary); padding: 4px; border-radius: var(--ids-border-radius);">WT</span>
+                    <span class="ids-value" style="border: 1px solid var(--ids-color-secondary); padding: 4px; border-radius: var(--ids-border-radius);">KM9HT0003</span>
                 </div>
 
                 <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
@@ -410,11 +411,13 @@
                 </div>
 
                 <div class="ids-field-row">
-                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">0999</span>
-                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">PKLX0570</span>
+                    <span class="ids-value" style="border: 1px solid var(--ids-color-secondary); padding: 8px; border-radius: var(--ids-border-radius);">0999</span>
+                    <span class="ids-value" style="flex: 1; border: 1px solid var(--ids-color-secondary); padding: 8px; border-radius: var(--ids-border-radius);">PKLX0570</span>
+                </div>
+                <div class="ids-field-row">
+                    <span class="ids-value" style="flex: 1; border: 1px solid var(--ids-color-secondary); padding: 8px; border-radius: var(--ids-border-radius);">PKLX0570</span>
                 </div>
 
-                <div class="ids-large-text">PKLX0570</div>
 
                 <div style="margin: var(--ids-spacing-md) 0;">
                     <div style="font-size: 8pt; margin-bottom: 4px; color: var(--ids-color-secondary);">納品先コード　　　　*00C099905*</div>
@@ -426,24 +429,15 @@
                 <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
                     <span class="ids-label">得意先コード</span>
                     <span class="ids-label">納入先コード</span>
-                    <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 4px; border-radius: var(--ids-border-radius);">〒</span>
+                    <span class="ids-label">〒</span>
                 </div>
 
                 <div class="ids-field-row">
-                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">0</span>
-                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">0999</span>
-                    <span class="ids-value" style="flex: 2; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">923-8626</span>
+                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-secondary); padding: 8px; border-radius: var(--ids-border-radius);">1701</span>
+                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-secondary); padding: 8px; border-radius: var(--ids-border-radius);">0</span>
+                    <span class="ids-value" style="flex: 2; border: 2px solid var(--ids-color-secondary); padding: 8px; border-radius: var(--ids-border-radius);">923-8626</span>
                 </div>
 
-                <div class="ids-field-row">
-                    <span class="ids-label">住所</span>
-                </div>
-                <div class="ids-field-row">
-                    <span style="display: flex; align-items: center; gap: 5px;">
-                        <span style="font-size: 14pt;">①</span>
-                        <span class="ids-value">石川県小松市光町93</span>
-                    </span>
-                </div>
             </div>
 
             <!-- 中央セクション -->
@@ -471,44 +465,31 @@
 
                 <div class="ids-field-row" style="gap: 40px;">
                     <div style="flex: 1;">
-                        <input type="text" class="ids-input" value="179.676" readonly style="background: var(--ids-color-background-secondary); margin-bottom: 4px;">
-                        <input type="text" class="ids-input ids-input-highlight" value="870,456" style="font-weight: bold;">
+                        <input type="text" class="ids-input" value="870,456" readonly style="background: var(--ids-color-background-secondary); margin-bottom: 4px;">
+                        <input type="text" class="ids-input ids-input-highlight" value="179.676" style="font-weight: bold;">
                     </div>
                 </div>
 
                 <div style="margin: var(--ids-spacing-md) 0;">
-                    <div style="font-size: 8pt; margin-bottom: 4px; color: var(--ids-color-secondary);">明細図番　　　　　　　PKLX0570</div>
+                    <div style="font-size: 8pt; margin-bottom: 4px; color: var(--ids-color-secondary);">明細図番　　　　　　　RC5-2637</div>
                     <div class="ids-barcode-container ids-barcode-small">
                         <svg id="barcode-detail"></svg>
                     </div>
                 </div>
 
-                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
-                    <span class="ids-label">得意先コード</span>
-                    <span class="ids-label">納入先コード</span>
-                    <span class="ids-label">〒</span>
-                </div>
 
-                <div class="ids-field-row">
-                    <span class="ids-value" style="flex: 1; border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">0999</span>
-                </div>
-
-                <div class="ids-field-row">
-                    <span class="ids-label">住所</span>
-                </div>
 
                 <div class="ids-field-row">
                     <span class="ids-label">納入先名称</span>
                 </div>
+                
                 <div class="ids-field-row">
                     <span class="ids-value" style="border: 2px solid var(--ids-color-primary); padding: 8px; border-radius: var(--ids-border-radius);">
-                        (株)小松村田製作所　輸島受付佐
+                        (株)村田製作所
                     </span>
                 </div>
 
-                <div class="ids-field-row">
-                    <span class="ids-label">給親</span>
-                </div>
+
             </div>
 
             <!-- 右側セクション（出荷数量連絡カード） -->
@@ -516,19 +497,19 @@
                 <div class="ids-delivery-card-title">出荷数量連絡カード</div>
 
                 <div class="ids-field-row">
-                    <span style="min-width: 80px; font-size: 9pt;">得意先</span>
-                    <span style="font-weight: 600;">0999</span>
+                    <span class="ids-label">得意先</span>
+                    <span class="ids-value" style="border: 1px solid var(--ids-color-secondary); padding: 4px; border-radius: var(--ids-border-radius);">0999</span>
                 </div>
 
                 <div class="ids-field-row">
-                    <span style="font-size: 9pt;">(株)村田製作所</span>
+                    <span class="ids-value" style="border: 1px solid var(--ids-color-secondary); padding: 4px; border-radius: var(--ids-border-radius);">(株)村田製作所</span>
                 </div>
 
                 <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
-                    <span style="min-width: 80px; font-size: 9pt;">品名</span>
+                    <span class="ids-label">品名</span>
                 </div>
                 <div class="ids-field-row">
-                    <div class="ids-large-text" style="font-size: 16pt; width: 100%;">PKLX0570</div>
+                    <span class="ids-value" style="font-size: 16pt; font-weight: 600; border: 1px solid var(--ids-color-secondary); padding: 8px; border-radius: var(--ids-border-radius); text-align: center; width: 100%; display: block;">PKLX0570</span>
                 </div>
 
                 <div class="ids-field-row" style="margin-top: var(--ids-spacing-md); align-items: flex-start;">
@@ -539,20 +520,42 @@
                 </div>
 
                 <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
-                    <span style="min-width: 80px; font-size: 9pt;">数量</span>
-                    <span style="font-size: 9pt; margin-left: auto;">在庫</span>
-                </div>
-                <div class="ids-field-row">
-                    <input type="text" class="ids-input ids-input-highlight" value="10/10(金)" style="font-weight: bold;">
-                    <span style="min-width: 40px; text-align: right;">0</span>
+                    <span class="ids-label">数量</span>
+                    <span class="ids-value" style="font-size: 12pt; border: 1px solid var(--ids-color-secondary); padding: 4px; border-radius: var(--ids-border-radius);">在庫</span>
                 </div>
 
                 <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
-                    <span style="min-width: 100px; font-size: 9pt;">加工区分</span>
-                    <span style="font-weight: 600; font-size: 12pt;">WT</span>
+                    <span class="ids-label">加工区分</span>
+                    <span class="ids-value" style="font-size: 12pt; border: 1px solid var(--ids-color-secondary); padding: 4px; border-radius: var(--ids-border-radius);">WT</span>
                 </div>
 
-                <div style="margin-top: var(--ids-spacing-md); border-top: 2px solid var(--ids-color-primary); padding-top: var(--ids-spacing-md);">
+            </div>
+
+
+
+            <div class="ids-delivery-card2">
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <div class="ids-field-row">
+                        <span style="min-width: 80px; font-size: 11pt; font-weight: 600;">住所</span>
+                    </div>
+                    <div class="ids-field-row">
+                        <span style="min-width: 80px; font-size: 14pt; font-weight: 600; color: var(--ids-color-primary);">石川県小松市光町93</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ids-delivery-card4">
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                    <div class="ids-field-row">
+                        <span style="min-width: 80px; font-size: 9pt;"></span>
+                    </div>
+                    <div class="ids-field-row">
+                        <span style="min-width: 80px; font-size: 9pt;"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="ids-delivery-card3">
+                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+
                     <div class="ids-field-row">
                         <span style="min-width: 80px; font-size: 9pt;">納期</span>
                     </div>
@@ -561,8 +564,11 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
+
+        
         <!-- 下部プロセスセクション -->
         <div class="ids-bottom-grid">
             <div class="ids-process-box">
