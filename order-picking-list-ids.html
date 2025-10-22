@@ -8,6 +8,9 @@
     <!-- バーコード生成ライブラリ -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     
+    <!-- QRコード生成ライブラリ -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
     <style>
         /* IDSテーマに準拠したカスタムスタイル */
         :root {
@@ -655,10 +658,23 @@
                 console.warn('JsBarcode ライブラリが読み込まれていません');
             }
 
-            // QRコード生成（簡易版 - テキストで代替）
+            // QRコード生成
             const qrElement = document.getElementById('qr-footer');
-            if (qrElement) {
-                // 実際のQRコード生成ライブラリを使用する場合はここで実装
+            if (qrElement && typeof QRCode !== 'undefined') {
+                // 既存の内容をクリア
+                qrElement.innerHTML = '';
+                
+                // QRコード生成
+                new QRCode(qrElement, {
+                    text: "PKLX0570",
+                    width: 110,
+                    height: 110,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } else if (qrElement) {
+                // QRCodeライブラリが読み込まれていない場合は代替テキストを表示
                 qrElement.innerHTML = '<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #f0f0f0; font-size: 8pt; text-align: center;">QR Code<br>PKLX0570</div>';
             }
 
