@@ -38,7 +38,7 @@
 
         @page {
             size: A4 landscape;
-            margin: 10mm;
+            margin: 5mm;
         }
 
         body {
@@ -222,19 +222,19 @@
         .ids-process-box {
             border: 2px solid var(--ids-color-primary);
             border-radius: var(--ids-border-radius);
-            padding: var(--ids-spacing-sm);
+            padding: var(--ids-spacing-xs);
             position: relative;
             background: var(--ids-color-background);
             box-shadow: 0 1px 3px rgba(30, 136, 229, 0.1);
-            min-height: 100px;
+            min-height: 80px;
         }
 
         .ids-process-title {
             text-align: center;
             font-weight: 600;
-            font-size: 11pt;
-            padding-bottom: var(--ids-spacing-sm);
-            margin-bottom: var(--ids-spacing-sm);
+            font-size: 10pt;
+            padding-bottom: var(--ids-spacing-xs);
+            margin-bottom: var(--ids-spacing-xs);
             border-bottom: 2px solid var(--ids-color-primary);
             color: var(--ids-color-primary);
         }
@@ -366,14 +366,16 @@
     <div class="ids-page-container">
         <!-- ヘッダー -->
         <div class="ids-header">
-            <div class="ids-header-content">
-                <div class="ids-badge">||||| New |||||</div>
+            <div class="ids-header-content" style="flex-direction: row; align-items: center; gap: var(--ids-spacing-lg);">
+                <div class="ids-badge">||| New |||</div>
                 <div class="ids-header-barcode">
-                    <div style="font-size: 9pt; margin-bottom: 4px;">受注番号</div>
+                    <div style="font-size: 8pt; margin-bottom: 4px; display: flex; gap: 8px; align-items: center;">
+                        <span>受注番号</span>
+                        <span style="font-weight: 600;">*1424571M1*</span>
+                    </div>
                     <div class="ids-barcode-container ids-barcode-large">
                         <svg id="barcode-header"></svg>
                     </div>
-                    <div style="font-size: 8pt; margin-top: 2px;">*1424571M1*</div>
                 </div>
             </div>
             
@@ -537,11 +539,11 @@
 
 
             <div class="ids-delivery-card2">
-                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
-                    <div class="ids-field-row">
+                <div class="ids-field-row" style="margin-top: 2px;">
+                    <div class="ids-field-row" style="margin-bottom: 0px;">
                         <span style="min-width: 80px; font-size: 11pt; font-weight: 600;">住所</span>
                     </div>
-                    <div class="ids-field-row">
+                    <div class="ids-field-row" style="margin-bottom: 0px;">
                         <span style="min-width: 80px; font-size: 14pt; font-weight: 600; color: var(--ids-color-primary);">石川県小松市光町93</span>
                     </div>
                 </div>
@@ -557,13 +559,13 @@
                 </div>
             </div>
             <div class="ids-delivery-card3">
-                <div class="ids-field-row" style="margin-top: var(--ids-spacing-md);">
+                <div class="ids-field-row" style="margin-top: 2px;">
 
-                    <div class="ids-field-row">
-                        <span style="min-width: 80px; font-size: 9pt;">納期</span>
+                    <div class="ids-field-row" style="margin-bottom: 0px;">
+                        <span style="min-width: 60px; font-size: 11pt;">納期</span>
                     </div>
-                    <div class="ids-field-row">
-                        <input type="text" class="ids-input ids-input-highlight" value="10月31日(金)" style="font-size: 18pt; text-align: center; font-weight: bold; height: 50px;">
+                    <div class="ids-field-row" style="margin-bottom: 0px;">
+                        <input type="text" class="ids-input ids-input-highlight" value="10月31日(金)" style="font-size: 16pt; text-align: center; font-weight: bold; height: 30px;">
                     </div>
                 </div>
             </div>
@@ -607,11 +609,11 @@
 
             <!-- ピッキングリストバーコード（右側に配置） -->
             <div class="ids-process-box" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <div style="margin-bottom: 8px; font-size: 9pt; font-weight: 600; text-align: center;">ピッキングリスト<br>バーコード</div>
-                <div style="width: 120px; height: 120px; border: 2px solid var(--ids-color-primary); background: white; display: flex; align-items: center; justify-content: center;">
-                    <div id="qr-footer" style="width: 110px; height: 110px;"></div>
+                <div style="margin-bottom: 4px; font-size: 8pt; font-weight: 600; text-align: center;">ピッキングリスト<br>バーコード</div>
+                <div style="width: 90px; height: 90px; border: 2px solid var(--ids-color-primary); background: white; display: flex; align-items: center; justify-content: center;">
+                    <div id="qr-footer" style="width: 80px; height: 80px;"></div>
                 </div>
-                <div style="font-size: 7pt; margin-top: 4px; text-align: center;">NSN.1</div>
+                <div style="font-size: 6pt; margin-top: 2px; text-align: center;">NSN.1</div>
             </div>
         </div>
 
@@ -667,8 +669,8 @@
                 // QRコード生成
                 new QRCode(qrElement, {
                     text: "PKLX0570",
-                    width: 110,
-                    height: 110,
+                    width: 80,
+                    height: 80,
                     colorDark: "#000000",
                     colorLight: "#ffffff",
                     correctLevel: QRCode.CorrectLevel.H
